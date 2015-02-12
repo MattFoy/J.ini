@@ -6,26 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class JINI {
-
-	// for testing
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		try {
-			JINI ini = new JINI("test.ini");
-			ini.printIni();
-			System.out.println("===================");
-			ini.addSection("TEST");
-			ini.addKVP("TEST", "x", "0");
-			
-			System.out.println(ini.getBoolean("TEST", "x"));
-			
-			//for (String s : ini.printIni()) { System.out.println(s); }
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
+	
 	private String path;
 	private BufferedReader br;
 	private Sections ini;
@@ -35,7 +16,6 @@ public class JINI {
 		this.path = path;
 		br = new BufferedReader(new FileReader(path));
 		load();
-
 	}
 
 	public void load() throws IOException {
@@ -209,6 +189,14 @@ public class JINI {
 			throw new IOException("Invalid boolean format: " + value);
 		}
 	}
+	
+	public String[] getSectionNames() {
+		return this.ini.getSectionNames();
+	}
+	
+	public String[] getKeysInSection(String section) {
+		return this.ini.get(section).kvps.getKeys();
+	}
 
 	// Returns the contents of the ini file as an ArraLisy of lines.
 	public ArrayList<String> printIni() {
@@ -241,9 +229,9 @@ public class JINI {
 	
 	// The following are all private inner classes to act as data structures for the ini files content.
 	
-	private class Sections extends ArrayList<Section> {
+	private class Sections extends ArrayList<Section> {		
 		private static final long serialVersionUID = 3902113370537074117L;
-
+		
 		public boolean contains(String section) {
 			for (Section sec : this) {
 				if (sec.name == section) {
@@ -260,6 +248,15 @@ public class JINI {
 				}
 			}
 			return null;
+		}
+		
+		public String[] getSectionNames() {
+			String[] result = new String[this.size()];
+			int i = 0;
+			for(Section sec : this) {
+				result[i++] = sec.name;
+			}
+			return result;
 		}
 
 		public void remove(String section) {
@@ -290,6 +287,15 @@ public class JINI {
 
 		public void remove(String key) {
 			this.remove(this.get(key));
+		}
+		
+		public String[] getKeys() {
+			String[] result = new String[this.size()];
+			int i = 0;
+			for(KVP kvp : this) {
+				result[i++] = kvp.key;
+			}
+			return result;
 		}
 	}
 

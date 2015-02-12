@@ -5,7 +5,7 @@ public class Sample {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
-			JINI ini = new JINI("test.ini");
+			JINI ini = new JINI("test.ini", false);
 			ini.printIni();
 			System.out.println("===================");
 			ini.addSection("TEST");

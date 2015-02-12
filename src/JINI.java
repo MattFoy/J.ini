@@ -1,20 +1,32 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class JINI {
-	
+
 	private String path;
 	private BufferedReader br;
 	private Sections ini;
 	private ArrayList<String> comments = new ArrayList<String>();
 
-	public JINI(String path) throws IOException {
+	public JINI(String path, boolean createFileIfNotFound) throws IOException {
 		this.path = path;
-		br = new BufferedReader(new FileReader(path));
+		FileReader fr;
+		try {
+			fr = new FileReader(path);
+		} catch (FileNotFoundException fnfe) {
+			if (createFileIfNotFound) {
+				File f = new File(path);
+				f.createNewFile();
+			}
+			fr = new FileReader(path);
+		}
+		br = new BufferedReader(fr);
 		load();
 	}
 
@@ -126,7 +138,7 @@ public class JINI {
 	public boolean containsSection(String section) {
 		return ini.contains(section);
 	}
-	
+
 	public boolean sectionContainsKey(String section, String key)
 			throws IOException {
 		if (ini.contains(section)) {
@@ -139,7 +151,7 @@ public class JINI {
 			throw new IOException("No such section header: " + section);
 		}
 	}
-	
+
 	// Attempts to return the value of the key in the given section.
 	public String getString(String section, String key) throws IOException {
 		if (ini.contains(section)) {
@@ -158,7 +170,7 @@ public class JINI {
 			IOException {
 		return Integer.parseInt(getString(section, key));
 	}
-	
+
 	// Attempts to return the value as a float
 	public Float getFloat(String section, String key)
 			throws NumberFormatException, IOException {
@@ -170,16 +182,15 @@ public class JINI {
 			throws NumberFormatException, IOException {
 		return Double.parseDouble(getString(section, key));
 	}
-	
+
 	// Gets the first char of the value.
 	public char getChar(String section, String key)
 			throws NumberFormatException, IOException {
 		return (getString(section, key).charAt(0));
 	}
-	
+
 	// Attempts to derive a boolean from the value.
-	public Boolean getBoolean(String section, String key)
-			throws IOException {
+	public Boolean getBoolean(String section, String key) throws IOException {
 		String value = getString(section, key);
 		if ((value.toLowerCase() == "true") || (value == "1")) {
 			return true;
@@ -189,11 +200,11 @@ public class JINI {
 			throw new IOException("Invalid boolean format: " + value);
 		}
 	}
-	
+
 	public String[] getSectionNames() {
 		return this.ini.getSectionNames();
 	}
-	
+
 	public String[] getKeysInSection(String section) {
 		return this.ini.get(section).kvps.getKeys();
 	}
@@ -226,12 +237,13 @@ public class JINI {
 		writer.flush();
 		writer.close();
 	}
-	
-	// The following are all private inner classes to act as data structures for the ini files content.
-	
-	private class Sections extends ArrayList<Section> {		
+
+	// The following are all private inner classes to act as data structures for
+	// the ini files content.
+
+	private class Sections extends ArrayList<Section> {
 		private static final long serialVersionUID = 3902113370537074117L;
-		
+
 		public boolean contains(String section) {
 			for (Section sec : this) {
 				if (sec.name == section) {
@@ -249,11 +261,11 @@ public class JINI {
 			}
 			return null;
 		}
-		
+
 		public String[] getSectionNames() {
 			String[] result = new String[this.size()];
 			int i = 0;
-			for(Section sec : this) {
+			for (Section sec : this) {
 				result[i++] = sec.name;
 			}
 			return result;
@@ -288,11 +300,11 @@ public class JINI {
 		public void remove(String key) {
 			this.remove(this.get(key));
 		}
-		
+
 		public String[] getKeys() {
 			String[] result = new String[this.size()];
 			int i = 0;
-			for(KVP kvp : this) {
+			for (KVP kvp : this) {
 				result[i++] = kvp.key;
 			}
 			return result;

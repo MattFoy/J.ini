@@ -1,4 +1,5 @@
 import java.io.IOException;
+import foy.util.JINI;
 
 public class Sample {
 

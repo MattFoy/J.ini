@@ -1,3 +1,5 @@
+package foy.util;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -139,7 +141,7 @@ public class JINI {
 		return ini.contains(section);
 	}
 
-	public boolean sectionContainsKey(String section, String key)
+	public boolean containsKey(String section, String key)
 			throws IOException {
 		if (ini.contains(section)) {
 			if (ini.get(section).kvps.contains(key)) {

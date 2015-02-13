@@ -79,6 +79,48 @@ public class JINI {
 		}
 	}
 
+	public boolean verify(String[] sections, String[][] keyLists,
+			boolean createIfNotExists) {
+		boolean verified = true;
+
+		for (String s : sections) {
+			if (!this.containsSection(s)) {
+				if (createIfNotExists) {
+					try {
+						this.addSection(s);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					return false;
+				}
+			}
+		}
+
+		int i = 0;
+		for (String[] keys : keyLists) {
+			for (String key : keys) {
+				try {
+					if (!this.containsKey(sections[i], key)) {
+						if (createIfNotExists) {
+							this.addKVP(sections[i], key, "0");
+						} else {
+							return false;
+						}
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+			}
+			i++;
+		}
+
+		return verified;
+	}
+
 	public Section addSection(String section) throws IOException {
 		if (ini.contains(section)) {
 			throw new IOException("Duplicate section header: " + section);
@@ -141,8 +183,7 @@ public class JINI {
 		return ini.contains(section);
 	}
 
-	public boolean containsKey(String section, String key)
-			throws IOException {
+	public boolean containsKey(String section, String key) throws IOException {
 		if (ini.contains(section)) {
 			if (ini.get(section).kvps.contains(key)) {
 				return true;

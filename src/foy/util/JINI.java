@@ -79,9 +79,11 @@ public class JINI {
 		}
 	}
 
-	public boolean verify(String[] sections, String[][] keyLists,
+	public String verify(String[] sections, String[][] keyLists,
 			boolean createIfNotExists) {
-		boolean verified = true;
+		int missingCount = 0;
+		StringBuilder missingSections = new StringBuilder();
+		StringBuilder missingKeys = new StringBuilder();
 
 		for (String s : sections) {
 			if (!this.containsSection(s)) {
@@ -93,7 +95,8 @@ public class JINI {
 						e.printStackTrace();
 					}
 				} else {
-					return false;
+					missingCount++;
+					missingSections.append(s).append(" ");
 				}
 			}
 		}
@@ -106,19 +109,21 @@ public class JINI {
 						if (createIfNotExists) {
 							this.addKVP(sections[i], key, "0");
 						} else {
-							return false;
+							missingCount++;
+							missingKeys.append(key).append(" ");
 						}
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					return false;
+
 				}
 			}
 			i++;
 		}
-
-		return verified;
+		return (missingCount > 0) ? new StringBuilder("MISSING:\n  [SECTIONS]")
+				.append(missingSections.toString()).append("\n  [KEYS]")
+				.append(missingKeys.toString()).toString() : "";
 	}
 
 	public Section addSection(String section) throws IOException {
@@ -180,7 +185,7 @@ public class JINI {
 	}
 
 	public boolean containsSection(String section) {
-		return ini.contains(section);
+		return this.ini.contains(section);
 	}
 
 	public boolean containsKey(String section, String key) throws IOException {
@@ -235,9 +240,9 @@ public class JINI {
 	// Attempts to derive a boolean from the value.
 	public Boolean getBoolean(String section, String key) throws IOException {
 		String value = getString(section, key);
-		if ((value.toLowerCase() == "true") || (value == "1")) {
+		if ((value.toLowerCase().equals("true")) || (value.equals("1"))) {
 			return true;
-		} else if ((value.toLowerCase() == "false") || (value == "0")) {
+		} else if ((value.toLowerCase().equals("false")) || (value.equals("0"))) {
 			return false;
 		} else {
 			throw new IOException("Invalid boolean format: " + value);
@@ -289,7 +294,7 @@ public class JINI {
 
 		public boolean contains(String section) {
 			for (Section sec : this) {
-				if (sec.name == section) {
+				if (sec.name.equals(section)) {
 					return true;
 				}
 			}
@@ -298,7 +303,7 @@ public class JINI {
 
 		public Section get(String section) {
 			for (Section sec : this) {
-				if (sec.name == section) {
+				if (sec.name.equals(section)) {
 					return sec;
 				}
 			}
@@ -324,7 +329,7 @@ public class JINI {
 
 		public boolean contains(String key) {
 			for (KVP kvp : this) {
-				if (kvp.key == key) {
+				if (kvp.key.equals(key)) {
 					return true;
 				}
 			}
@@ -333,7 +338,7 @@ public class JINI {
 
 		public KVP get(String key) {
 			for (KVP kvp : this) {
-				if (kvp.key == key) {
+				if (kvp.key.equals(key)) {
 					return kvp;
 				}
 			}

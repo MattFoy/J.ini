@@ -11,6 +11,8 @@ public class Sample {
 			System.out.println("===================");
 			ini.addSection("TEST");
 			ini.addKVP("TEST", "x", "0");
+			
+			System.out.println(ini.containsSection("SECTION 1"));
 
 			//System.out.println(ini.getBoolean("TEST", "x"));
 

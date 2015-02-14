@@ -42,7 +42,7 @@ public class JINI {
 			lineNum++;
 			if (line.length() == 0) {
 				continue; // blank line, can be ignored
-			} else if (line.startsWith("#")) {
+			} else if (line.startsWith(";")) {
 				comments.add(line);
 				continue; // comment or blank line
 			} else if (line.startsWith("[") && line.endsWith("]")) {

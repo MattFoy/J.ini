@@ -91,7 +91,7 @@ public class JINI {
 					try {
 						this.addSection(s);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+						
 						e.printStackTrace();
 					}
 				} else {
@@ -114,7 +114,7 @@ public class JINI {
 						}
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 
 				}
@@ -125,7 +125,18 @@ public class JINI {
 				.append(missingSections.toString()).append("\n  [KEYS]")
 				.append(missingKeys.toString()).toString() : "";
 	}
-
+	
+	public void addComment(String sectionName, String comment) {
+		Section sec = this.ini.get(sectionName);
+		sec.comments.add("; " + comment);
+	}
+	
+	public void addComment(String sectionName, String keyName, String comment) {
+		Section sec = this.ini.get(sectionName);
+		KVP kvp = sec.kvps.get(keyName);
+		kvp.comments.add("; " + comment);
+	}
+	
 	public Section addSection(String section) throws IOException {
 		if (ini.contains(section)) {
 			throw new IOException("Duplicate section header: " + section);
@@ -269,7 +280,7 @@ public class JINI {
 				for (String s : kvp.comments) {
 					result.add("\t" + s);
 				}
-				result.add("\t" + kvp.key + "=" + kvp.value);
+				result.add("\t" + kvp.key + " = " + kvp.value);
 			}
 		}
 		return result;

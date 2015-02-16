@@ -41,6 +41,7 @@ public class JINI {
 			line = line.trim();
 			lineNum++;
 			if (line.length() == 0) {
+				comments.add(line); //saves the blank line as a "comment" to preserve whitespacing
 				continue; // blank line, can be ignored
 			} else if (line.startsWith(";")) {
 				comments.add(line);
@@ -282,6 +283,9 @@ public class JINI {
 				}
 				result.add("\t" + kvp.key + " = " + kvp.value);
 			}
+		}
+		for (String s : comments) {
+			result.add(s);
 		}
 		return result;
 	}

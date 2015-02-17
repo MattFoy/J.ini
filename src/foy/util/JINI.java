@@ -41,7 +41,7 @@ public class JINI {
 			line = line.trim();
 			lineNum++;
 			if (line.length() == 0) {
-				comments.add(line); //saves the blank line as a "comment" to preserve whitespacing
+				comments.add(""); //saves the blank line as a "comment" to preserve whitespacing
 				continue; // blank line, can be ignored
 			} else if (line.startsWith(";")) {
 				comments.add(line);

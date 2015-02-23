@@ -41,7 +41,8 @@ public class JINI {
 			line = line.trim();
 			lineNum++;
 			if (line.length() == 0) {
-				comments.add(""); //saves the blank line as a "comment" to preserve whitespacing
+				comments.add(""); // saves the blank line as a "comment" to
+									// preserve whitespacing
 				continue; // blank line, can be ignored
 			} else if (line.startsWith(";")) {
 				comments.add(line);
@@ -92,13 +93,12 @@ public class JINI {
 					try {
 						this.addSection(s);
 					} catch (IOException e) {
-						
+
 						e.printStackTrace();
 					}
-				} else {
-					missingCount++;
-					missingSections.append(s).append(" ");
 				}
+				missingCount++;
+				missingSections.append(s).append(" ");
 			}
 		}
 
@@ -109,15 +109,12 @@ public class JINI {
 					if (!this.containsKey(sections[i], key)) {
 						if (createIfNotExists) {
 							this.addKVP(sections[i], key, "0");
-						} else {
-							missingCount++;
-							missingKeys.append(key).append(" ");
 						}
+						missingCount++;
+						missingKeys.append(key).append(" ");
 					}
 				} catch (IOException e) {
-					
 					e.printStackTrace();
-
 				}
 			}
 			i++;
@@ -126,18 +123,18 @@ public class JINI {
 				.append(missingSections.toString()).append("\n  [KEYS]")
 				.append(missingKeys.toString()).toString() : "";
 	}
-	
+
 	public void addComment(String sectionName, String comment) {
 		Section sec = this.ini.get(sectionName);
 		sec.comments.add("; " + comment);
 	}
-	
+
 	public void addComment(String sectionName, String keyName, String comment) {
 		Section sec = this.ini.get(sectionName);
 		KVP kvp = sec.kvps.get(keyName);
 		kvp.comments.add("; " + comment);
 	}
-	
+
 	public Section addSection(String section) throws IOException {
 		if (ini.contains(section)) {
 			throw new IOException("Duplicate section header: " + section);
